@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.sencha.com/ext/gpl/5.1.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
+    <script type="text/javascript" src="https://cdn.sencha.com/ext/gpl/5.1.0/build/ext-all.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<script type="text/javascript">
+    Ext.application({
+    name: 'Документы',
+    launch: function () {
+        Ext.create('Ext.form.Panel', {
+            id: 'login-panel',
+            renderTo: Ext.getBody(),
+            title: 'Авторизация',
+            width: 300,
+            bodyPadding: 10,
+            defaultType: 'textfield',
+            items: [{
+                fieldLabel: 'Логин',
+                name: 'username',
+                allowBlank: false
+            }, {
+                fieldLabel: 'Пароль',
+                name: 'password',
+                inputType: 'password',
+                allowBlank: false
+            }],
+            buttons: [{
+                text: 'Войти',
+                formBind: true,
+                handler: function () {
+                    var form = this.up('form').getForm();
+                    if (form.isValid()) {
+                        var values = form.getValues();
+                        if (values.username === 'admin' && values.password === 'adm123') {
+                            var successPanel = Ext.widget('panel', {
+                                width: '100%',
+                                height: 300,
+                                title: 'Документы',
+                                renderTo: Ext.getBody(),
+                                layout: 'hbox',
+                                items: [
+                                    {
+                                        xtype: 'grid',
+                                        flex: 6,
+                                        columns: [
+                                            {
+                                                text: 'ID',
+                                                dataIndex: 'id'
+                                            },
+                                            {
+                                                text: 'Название',
+                                                dataIndex: 'name'
+                                            },
+                                            {
+                                                text: 'Описание',
+                                                dataIndex: 'description'
+                                            },
+                                            {
+                                                text: 'Подпись',
+                                                dataIndex: 'signature',
+                                                renderer: function(value, metaData) {
+                                                    if (value === 'Да') {
+                                                    metaData.tdStyle = 'background-color: green;';
+                                                    } else if (value === 'Нет') {
+                                                    metaData.tdStyle = 'background-color: red;';
+                                                    }
+                                                    return value;
+                                                }
+                                            }
+                                        ],
+                                        store: {
+                                            fields: ['id', 'name', 'description', 'signature'],
+                                            data: [
+                                                { id: '1', name: 'документ 1', description: 'описание 1', signature: 'Да' },
+                                                { id: '2', name: 'документ 2', description: 'описание 2', signature: 'Да' },
+                                                { id: '3', name: 'документ 3', description: 'описание 3', signature: 'Нет' }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        xtype: 'splitter'
+                                    },
+                                    {
+                                        xtype: 'panel',
+                                        flex: 1,
+                                        html: 'Привет admin',
+                                        buttons: [{
+                                            text:'Выйти'
+                                        }]
+                                    }
+                                ]
+                            });
+                            Ext.getCmp('login-panel').destroy(); 
+                            Ext.create('Ext.container.Viewport', {
+                                layout: 'fit',
+                                items: [successPanel]
+                            });
+                        } else {
+                            Ext.Msg.alert('Ошибка', 'Неправильный логин или пароль.');
+                        }
+                    }
+                }
+            }]
+        });
+    }
+});
+
+</script>
+</body>
+</html>
